@@ -1,0 +1,284 @@
+program management_stok_barang_transaksi_toko;
+uses crt, DOS;
+type                            //Di sini saya memiliki 3 file binary berjenis 'Typed file' dan saya akan mendefinisikan beberapa data record di dalam filenya 
+    Manajemen = record          //File pertama bernama Manajemen dan merupakan file untuk mencatat nama barang dan jumlah stok barang tersebut dan memiliki 2 data record
+        barangjual  :string;    //Data barangjual digunakan untuk menyimpan data nama barang oleh karena itu data ini berjenis string
+        stok        :integer;   //Data stok digunakan untuk menyimpan data jumlah stok barang oleh karena itu data ini berjenis integer
+        end;
+    Transaksi = record          //File kedua bernama Transaksi dan merupakan file untuk mencatat nama barang, tanggal barang terjual dan jumlah barang terjual dan memiliki 2 data record
+        barangbeli  :string;    //Data barangbeli digunakan untuk menyimpan nama barang yang terjual
+        tanggal     :integer;   //Data tanggal digunakan untuk menyimpan tanggal ketika transaksi dilakukan
+        terjual     :integer;   //Data terjual digunakan untuk menyimpan jumlah barang yang terjual
+        end;
+    kasir = record              //File ketiga bernama kasir dan merupakan file untuk menyimpan nama kasir yang akan digunakan untuk login dan memiliki 1 data record
+        namakasir:string;       //Data namakasir digunakan untuk menyimpan nama kasir yang bekerja di toko
+        end;
+
+var
+    F               : file of Manajemen;   //variabel F digunakan untuk mendefinisikan File Manajemen
+    P               : file of kasir;       //variabel P digunakan untuk mendefinisikan File kasir
+    A               : file of Transaksi;   //variabel A digunakan untuk mendefinisikan File Transaksi
+    T               : text;                //Variabel T digunakan untuk mendefinisikan file berjenis text
+    r               : Manajemen;           
+    y               : kasir;
+    q               : Transaksi;
+    c               : char;
+    s,j,b,d,u,w,h   : string;  
+    n,i,k,l,o       : integer;
+    g, m, v, DOW    : Word;                //Variabel dibaris ini digunakan untuk mendapatkan tanggal hari ini dari sistem komputer
+
+    //Sebelum menuliskan program utama ada beberapa funcion yang saya buat untuk mencatat tanggal hari login
+
+function inttostr(e: longint): string;  //Function inttostr berguna untuk mengubah file integer menjadi string
+var
+    z: string[12];
+        
+begin
+    str(e, z);
+    inttostr := z;
+end;
+
+function tanggal:string;                //Funcion tanggal digunakan untuk ketika program dijalankan kita dapat merekam waktu login
+var
+    g, m, v, dow : word;
+
+begin
+    getdate(g,m,v,dow);
+    tanggal := inttostr(g) + '-' + inttostr(m) + '-' + inttostr(v); //Ketiga variabel akan digunakan untuk mendapatkan data untuk tanggal, bulan, dan tahun akan digabung dan dirubah menjadi variabel string
+end;
+
+begin   //Program utama
+    repeat
+    clrscr;
+    writeln('=== Program Manajemen Stok Barang dan Transaksi Toko ===');        //Di bagian ini saya membuat menu login untuk para kasir
+    writeln('===========================================================');
+    writeln('       Login');
+    writeln;
+    write('  Nama Kasir :');    readln(j);     //kita tinggal menginputkan nama kasir yang bekerja di toko
+
+    s:=('rumah.bin');   //File yang berisikan daftar nama kasir akan di inputkan secara otomatis
+    assign(P,s);           
+    reset(P);
+    read(P,y);
+
+    n:=filesize(P);
+
+    for i:=0 to n-1 do  //Program akan mencari apakah nama kasir yang telah di inputkan ada di dalam file kasir
+    begin     
+        seek(P,i);
+        read(P,y);        
+        if (j=y.namakasir) then     //Jika program menemukan nama kasir yang sama di dalam file maka menu utama akan ditampilkan
+        begin
+            repeat
+            clrscr;
+            writeln('===   Menu Utama Program   ===');  //Menu utama
+            Writeln('===============================');
+            Writeln('1. Input Data Stok Barang');
+            Writeln('2. Daftar Data Stok Barang');
+            writeln('3. Input Data Transaksi');
+            writeln('4. Daftar Data Tanggal Transaksi');
+            writeln('5. Daftar Data Tanggal Login');
+            writeln;
+            writeln;
+            writeln;
+            writeln('                                   Kasir');
+            writeln;
+            writeln('                                  (',j,')');   //Nama Kasir yang login akan ditunjukan di menu utama
+            writeln;
+            write('Pilih Menu   :');    readln(k);  //Kita dapat memilih menu apa yang ingin kita buka
+                                                    
+            //Di sini saya menggunakan percabangan if karena flesibilitasnya dan kemudahan
+
+            if k=1 then     //jika menu yang dipilih adalah menu 1 maka percabangan ini yang akan dijalankan 
+
+            begin
+                clrscr;
+                Writeln('=== Input Data Stok Barang ===');  //Nama file akan diinputkan dengan otomatis sesuai dengan tanggal
+                b:=(tanggal+'-stok.bin');
+
+                assign(F,b);        //File akan berjenis binary dengan akhiran '.bin'
+                rewrite(F);
+
+                repeat
+                    clrscr;    
+                    write('Barang         = '); readln(r.barangjual);  //Setelah itu kita isikan datanya
+                    write('Stok Barang    = '); readln(r.stok);
+
+                    write(F,r);                 
+
+                    write('Masukan Data Lagi (Y/N) ?'); //Saya menambahkan pengulangan menggunakan repeat agar kita dapat memasukan data sebanyak mungkin
+                    
+                    repeat
+                        c:=upcase(readkey);     //pengulangan ini agar kita tidak perlu menekan enter dan cuma perlu memilih 'Y / N'
+                    until c in ['Y','N']; 
+                    writeln(c);
+                until c='N';
+
+                close(F);
+
+            end;
+
+            if k=2 then     //Jika pilihan menu adalah menu 2 maka percabangan ini yang akan dijalankan
+            
+            begin
+                clrscr;
+                Writeln('=== Daftar Data Stok Barang ===');
+                write('Masukan Nama File Dengan Format [Tahun-Bulan-Tanggal-stok.bin]    :');     readln(b);    //Di sini kita perlu memasukan nama file sesuai dengan formatnya
+
+                writeln;
+                write('Masukan Nama Barang  :');    readln(d);  //kita hanya perlu menginputkan nama barangnya dan setelah itu data barang tersebut akan terlihat         
+                
+                writeln;
+                assign(F,b);        //File akan berjenis binary dengan akhiran '.bin'       
+                reset(F);
+
+
+                n:=filesize(F);
+                for l:=0 to n-1 do  //Program akan mencarikan nama barang yang sama di dalam data file
+                begin     
+                    seek(F,l);
+                    read(F,r);
+                    if d=r.barangjual then //Jika ada nama barang yang sama maka datanya akan ditunjukan
+                    begin  
+                        writeln('Nama Barang     = ',r.barangjual);
+                        writeln('Stok Barang     = ',r.stok);
+                        readln;
+                    end;                
+                end;
+                close(F); 
+            end;
+            
+            if k=3 then     //Jika pilihan menu adalah menu 3 maka percabangan ini yang akan dijalankan
+            begin
+                clrscr;
+                writeln('=== Input Data Transaksi ===');
+                b:=(tanggal+', penjualan.bin');  //Di sini kita tidak perlu memasukan nama filenya karena akan disesuaikan dengan tanggal
+
+                assign(A,b);    //File akan berjenis binary dengan akhiran '.bin'
+                rewrite(A);
+
+                repeat
+                    clrscr;    
+                    write('Barang                  = '); readln(q.barangbeli); //Dan Kita Menginputkan Data Filenya
+                    write('Tanggal Transaksi       = '); readln(q.tanggal);
+                    write('Jumlah Barang Terjual   = '); readln(q.terjual);
+                    write(A,q);                 
+
+                    write('Masukan Data Lagi (Y/N) ?'); //Sama Seperti menu 1, menu 3 juga menggunakan perulangan agar dapat memasukan data sebanyak mungkin 
+                    repeat
+                        c:=upcase(readkey);     
+                    until c in ['Y','N'];
+                    writeln(c);
+                until c='N';
+                close(A);
+            end;
+     
+           
+            if k=4 then     //Jika pilihan menu adalah menu 4 maka percabangan ini yang akan dijalankan
+            begin
+                clrscr;
+                writeln('=== Daftar Data Tanggal Transaksi ===');
+                write('Masukan Nama File Dengan Format [Tahun-Bulan-Tanggal, penjualan.bin]  :'); readln(b);  //Kita cuma perlu memasukan nama file terlebih dahulu sesuai dengan formatnya
+
+                assign(A,b);    //File akan berjenis binary dengan akhiran '.bin'
+                reset(A);
+
+                write('Masukan Tanggal Transaksi Barang  :');    readln(o);  //Dan kita memasukan tanggal transaksi barangnya
+                writeln;
+                
+                n:=filesize(A);
+                for l:=0 to n-1 do  //Program akan melakukan pencarian melalui semua data file untuk nama barang yang sama dengan yang diinputkan
+                begin
+                    clrscr;
+                    seek(A,l);                   
+                    read(A,q);
+                    if o=q.tanggal then  //Maka jika ada barang yang sama maka data transaksi barang tersebut akan ditunjukan
+                    begin   
+                        writeln('Nama Barang        = ',q.barangbeli);
+                        writeln('Tanggal Transaksi  = ',q.tanggal);
+                        writeln('Jumlah Transaksi   = ',q.terjual);
+                        readln;
+                    end;
+                end;
+                close(A);
+            end;
+
+            if k=5 then     //Jika pilihan menu adalah menu 5 maka percabangan ini akan menunjukan daftar tanggal login
+            begin
+                begin
+                    clrscr;
+                    writeln('=== Daftar Data Tanggal Login ===');
+                    write('Masukan Nama File Dengan Format [Tahun-Bulan-Tanggal.txt] :');  readln(b);  //Nama file kita telah diinputkan terlebih dahulu sesuai dengan tanggal
+                    assign(T,b);        //File akan berjenis text dengan akhiran '.txt'                
+                    reset(T);
+                    writeln;
+
+                    repeat              //Data daftar waktu login akan ditampilkan
+                    readln(T,b,u,d);
+                    writeln(b,u,d);
+                    until eof(T);
+                    close(T);                   
+                end;
+            end;
+
+            if k>5 then     //Jika Menginputkan pilihan menu lebih dari 5 maka percabangan ini yang akan dijalankan
+            begin
+                write('Pilihan Menu Hingga Nomor 5');
+            end;
+        
+            writeln;
+            writeln;
+            write('Logout [Y / N] :');  // Disini terdapat pilihan logout jika kita memilih 'N' maka seluruh program akan terulang dari menu utama
+                repeat
+                c:=upcase(readkey);     //Kita tidak perlu menekan enter karena apa yang kita input akan langsung terbaca
+                until c in ['Y','N'];
+            writeln(c);
+            until c='Y';
+        end;
+    end;
+
+    close(P);
+
+    writeln;
+    writeln;
+    write('Try Login Again [Y / N] :');     //Di sini kita dapat memilih login lagi atau kita dapat mengakhiri program 
+        repeat
+        c:=upcase(readkey);     
+        until c in ['Y','N'];
+    writeln(c);
+    until c='N';
+
+    assign(P,s);    //Di sini saya membuka file daftar nama kasir sekali lagi untuk menenentukan jika program perlu merekam waktu login atau tidak           
+    reset(P);
+    read(P,y);
+
+    n:=filesize(P);
+
+    for i:=0 to n-1 do  //Program akan mencari jika nama yang kita inputkan sama dengan nama yang ada di data file kasir
+    begin     
+        seek(P,i);
+        read(P,y);        
+        if (j=y.namakasir) then     //jika kita telah menginputkan nama kasir yang benar maka kita akan merekam waktu login kita
+        begin
+            clrscr;
+            b:=(tanggal+'.txt');    //Di sini Nama file daftar login akan diinputkan secara otomatis sesuai dengan nama tanggal
+            assign(T,b);               
+            rewrite(T);           
+            b:=(tanggal);
+            u:=(', ');
+            d:=(j);
+            writeln(T,b,u,d);
+            close(T);
+            writeln;
+
+        end;
+
+    
+    end;            
+    writeln('Terima Kasih Telah Menggunakan Program');
+    writeln;
+    
+    close(P);
+    exit;
+
+end.

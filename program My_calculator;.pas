@@ -1,0 +1,65 @@
+program My_calculator;
+
+uses crt;
+var a, b, c:real;
+    d:char;
+
+//Mendefinisikan Prosedur
+
+procedure pertambahan;
+    begin
+        writeln;
+        writeln('Kalkulator Pertambahan');
+        write('Masukan Bilangan Pertama: '); readln(a);
+        write('Masukan Bilangan Kedua:   '); readln(b);
+        c:= a+b;
+        writeln('Hasil Operasinya adalah: ',c:0:2);
+    end;
+
+procedure pengurangan;
+    begin 
+        writeln;
+        writeln('Kalkulator Pengurangan');
+        write('Masukan Bilangan Pertama: '); readln(a);
+        write('Masukan Bilangan Kedua:   '); readln(b);
+        c:= a-b;
+        writeln('Hasil Operasinya adalah: ',c:0:2);
+    end;
+procedure perkalian;
+    begin
+        writeln;
+        writeln('Kalkulator Perkalian');
+        write('Masukan Bilangan Pertama: '); readln(a);
+        write('Masukan Bilangan Kedua:   '); readln(b);
+        c:= a*b;
+        writeln('Hasil Operasinya adalah: ',c:0:2);
+    end;
+
+procedure pembagian;
+    begin
+        writeln;
+        writeln('Kalkulator Pembagian');
+        write('Masukan Bilangan Pertama: '); readln(a);
+        write('Masukan Bilangan Kedua:   '); readln(b);
+        c:= a/b;
+        writeln('Hasil Operasinya adalah: ',c:0:2);
+    end;
+
+begin
+    clrscr;
+    // Memanggil Prosedur
+    writeln('Menu My calculator');
+    Writeln('-----------------------');
+    writeln('1. Pertambahan');
+    writeln('2. Pengurangan');
+    writeln('3. Perkalian');
+    writeln('4. Pembagian');
+    write('Pilih Salah Satu Operasi Aritmatikannya: '); readln(d);
+    case (d) of
+        '1': pertambahan;
+        '2': pengurangan;
+        '3': perkalian;
+        '4': pembagian;
+    end;
+    readln;
+end.
